@@ -17,7 +17,6 @@ def main():
 
     clock = pygame.time.Clock()
     running = True
-    victory = False
 
     while running:
         for event in pygame.event.get():
@@ -38,18 +37,25 @@ def main():
         pygame.display.flip()
         clock.tick(10)
 
+        # Movimiento independiente de la momia
+        game_map.move_mummy()
+
+        # Comprobar si la momia ha atrapado al jugador
+        if game_map.check_lose():
+            running = False
+            show_message(screen, '¡Has perdido!')
+
         # Verificar si el jugador ha ganado
-        if not victory and game_map.check_victory():
-            victory = True
-            show_victory_message(screen)
-            running = False  # Termina el bucle principal después de mostrar el mensaje
+        if game_map.check_victory():
+            running = False
+            show_message(screen, '¡Has ganado!')
 
     pygame.quit()
 
 
-def show_victory_message(screen):
+def show_message(screen, title):
     font = pygame.font.SysFont(None, 74)
-    text = font.render('¡Has ganado!', True, (255, 255, 255))  # Texto en blanco
+    text = font.render(title, True, (255, 255, 255))  # Texto en blanco
     text_rect = text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
     screen.blit(text, text_rect)
     pygame.display.flip()
