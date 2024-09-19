@@ -1,7 +1,7 @@
 import pygame
 import random
 from cell import Cell
-from config import SIZE_CELL, VISITED_COLOR, TREASURE_COLOR, MUMMY_COLOR, PLAYER_COLOR, MARGIN, BACKGROUND_COLOR
+from config import SIZE_CELL, COLOR_VISITED, COLOR_TREASURE, COLOR_MUMMY, COLOR_PLAYER, COLOR_BLACK, MARGIN
 
 
 class GameMap:
@@ -52,18 +52,18 @@ class GameMap:
             for column in range(len(self.listCells[row])):
                 cell = self.listCells[row][column]
                 if cell.isPlayer:
-                    color = PLAYER_COLOR
+                    color = COLOR_PLAYER
                     cell.visit()
                 elif cell.isMummy:
-                    color = MUMMY_COLOR
+                    color = COLOR_MUMMY
                 elif cell.has_treasure:
-                    color = TREASURE_COLOR
+                    color = COLOR_TREASURE
                 elif cell.visited:
-                    color = VISITED_COLOR
+                    color = COLOR_VISITED
                 elif cell.is_hole:
-                    color = VISITED_COLOR
+                    color = COLOR_VISITED
                 else:
-                    color = BACKGROUND_COLOR
+                    color = COLOR_BLACK
 
                 x = MARGIN + column * SIZE_CELL
                 y = MARGIN + row * SIZE_CELL
