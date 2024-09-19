@@ -2,6 +2,9 @@ import pygame
 from gameMap import GameMap
 from config import SIZE_CELL, MARGIN
 
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
 
 def main():
     pygame.init()
@@ -15,6 +18,7 @@ def main():
     game_map = GameMap()
 
     clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 74)
     running = True
 
     while running:
@@ -31,7 +35,7 @@ def main():
                 elif event.key == pygame.K_RIGHT:
                     game_map.move('RIGHT')
 
-        screen.fill((0, 0, 0))
+        screen.fill(BLACK)
         game_map.draw_map(screen)
         pygame.display.flip()
         clock.tick(10)
@@ -40,18 +44,17 @@ def main():
 
         if game_map.check_lose():
             running = False
-            show_message(screen, '¡You Lose!')
+            show_message(screen, font, '¡You Lose!')
 
         if game_map.check_victory():
             running = False
-            show_message(screen, '¡You Win!')
+            show_message(screen, font, '¡You Win!')
 
     pygame.quit()
 
 
-def show_message(screen, title):
-    font = pygame.font.SysFont(None, 74)
-    text = font.render(title, True, (255, 255, 255))  # Texto en blanco
+def show_message(screen, font, title):
+    text = font.render(title, True, WHITE)  # Texto en blanco
     text_rect = text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
     screen.blit(text, text_rect)
     pygame.display.flip()

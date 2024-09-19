@@ -1,15 +1,15 @@
 import pygame
-
-from cell import Cell
 import random
-
-from config import SIZE_CELL, VISITED_COLOR, TREASURE_COLOR, MUMMY_COLOR, PLAYER_COLOR, MARGIN, \
-    BACKGROUND_COLOR
+from cell import Cell
+from config import SIZE_CELL, VISITED_COLOR, TREASURE_COLOR, MUMMY_COLOR, PLAYER_COLOR, MARGIN, BACKGROUND_COLOR
 
 
 class GameMap:
     def __init__(self):
         self.listCells = self.load_map()
+        self.player_pos = None
+        self.mummy_pos = None
+        self.treasure_pos = None
         self.setup_map()
 
     @staticmethod
@@ -18,13 +18,9 @@ class GameMap:
 
     def setup_map(self):
         def obtain_free_cells():
-            array_cells = []
-            for fila in range(len(self.listCells)):
-                for col in range(len(self.listCells[fila])):
-                    cell = self.listCells[fila][col]
-                    if not cell.is_hole and not cell.has_treasure and cell.reward_points == 0:
-                        array_cells.append((fila, col))
-            return array_cells
+            return [(fila, col) for fila in range(len(self.listCells)) for col in range(len(self.listCells[fila]))
+                    if not (self.listCells[fila][col].is_hole or self.listCells[fila][col].has_treasure
+                            or self.listCells[fila][col].reward_points != 0)]
 
         def put_element(tipo, valor=0):
             array_cells = obtain_free_cells()
@@ -44,7 +40,6 @@ class GameMap:
                 elif tipo == 'player':
                     self.player_pos = (fila, col)
                     cell.isPlayer = True
-            return None
 
         put_element('treasure')
         put_element('mummy')
@@ -56,7 +51,6 @@ class GameMap:
         for row in range(len(self.listCells)):
             for column in range(len(self.listCells[row])):
                 cell = self.listCells[row][column]
-
                 if cell.isPlayer:
                     color = PLAYER_COLOR
                     cell.visit()
@@ -73,15 +67,11 @@ class GameMap:
 
                 x = MARGIN + column * SIZE_CELL
                 y = MARGIN + row * SIZE_CELL
-
                 pygame.draw.rect(screen, color, pygame.Rect(x, y, SIZE_CELL, SIZE_CELL))
                 pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(x, y, SIZE_CELL, SIZE_CELL), 3)
 
     def move(self, direction):
-        cell = get_player_cell(self)
-        row = cell.row
-        column = cell.column
-
+        row, column = self.player_pos
         if direction == 'UP':
             new_pos = (row - 1, column)
         elif direction == 'DOWN':
@@ -91,68 +81,51 @@ class GameMap:
         elif direction == 'RIGHT':
             new_pos = (row, column + 1)
         else:
-            return
+            return 0
 
-        if 0 <= new_pos[0] < len(self.listCells) and 0 <= new_pos[1] < len(self.listCells):
-            cell = self.listCells[new_pos[0]][new_pos[1]]
-            if not cell.is_hole:
-                cell = self.listCells[row][column]
-                cell.isPlayer = False
-
-                cell = self.listCells[new_pos[0]][new_pos[1]]
-                cell.isPlayer = True
-
-                return cell.visit()
+        if self.is_valid_move(new_pos):
+            self.update_position(self.player_pos, new_pos, 'player')
+            self.player_pos = new_pos
+            return self.listCells[new_pos[0]][new_pos[1]].visit()
         return 0
 
     def move_mummy(self):
+        row, column = self.mummy_pos
         directions = ['UP', 'DOWN', 'LEFT', 'RIGHT']
-        direction = random.choice(directions)
+        random.shuffle(directions)  # Randomize direction order
+        for direction in directions:
+            if direction == 'UP':
+                new_pos = (row - 1, column)
+            elif direction == 'DOWN':
+                new_pos = (row + 1, column)
+            elif direction == 'LEFT':
+                new_pos = (row, column - 1)
+            elif direction == 'RIGHT':
+                new_pos = (row, column + 1)
 
-        cell = get_mummy_cell(self)
-        row = cell.row
-        column = cell.column
+            if self.is_valid_move(new_pos):
+                self.update_position(self.mummy_pos, new_pos, 'mummy')
+                self.mummy_pos = new_pos
+                break
 
-        if direction == 'UP':
-            new_pos = (row - 1, column)
-        elif direction == 'DOWN':
-            new_pos = (row + 1, column)
-        elif direction == 'LEFT':
-            new_pos = (row, column - 1)
-        elif direction == 'RIGHT':
-            new_pos = (row, column + 1)
-        else:
-            return
+    def update_position(self, old_pos, new_pos, entity):
+        old_cell = self.listCells[old_pos[0]][old_pos[1]]
+        new_cell = self.listCells[new_pos[0]][new_pos[1]]
+        if entity == 'player':
+            old_cell.isPlayer = False
+            new_cell.isPlayer = True
+        elif entity == 'mummy':
+            old_cell.isMummy = False
+            new_cell.isMummy = True
 
-        if 0 <= new_pos[0] < len(self.listCells) and 0 <= new_pos[1] < len(self.listCells):
-            cell = self.listCells[new_pos[0]][new_pos[1]]
-            if not cell.is_hole:
-                cell = self.listCells[row][column]
-                cell.isMummy = False
-
-                cell = self.listCells[new_pos[0]][new_pos[1]]
-                cell.isMummy = True
+    def is_valid_move(self, pos):
+        row, col = pos
+        if 0 <= row < len(self.listCells) and 0 <= col < len(self.listCells[0]):
+            return not self.listCells[row][col].is_hole
+        return False
 
     def check_victory(self):
-        cell = get_player_cell(self)
-        cell2 = self.listCells[cell.row][cell.column]
-        return cell2.has_treasure
+        return self.player_pos == self.treasure_pos
 
     def check_lose(self):
-        return get_player_cell(self) == get_mummy_cell(self)
-
-
-def get_player_cell(self):
-    for row in self.listCells:
-        for cell in row:
-            if cell.isPlayer:
-                return cell
-    return None
-
-
-def get_mummy_cell(self):
-    for row in self.listCells:
-        for cell in row:
-            if cell.isMummy:
-                return cell
-    return None
+        return self.player_pos == self.mummy_pos
