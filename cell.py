@@ -6,14 +6,14 @@ class Cell:
         self.is_hole = is_hole
         self.reward_points = reward_points
         self.visited = False
-        self.isPlayer = False  # Atributo para saber si el jugador está en esta celda
-        self.isMummy = False  # Atributo para saber si la momia está en esta celda
+        self.isPlayer = False
+        self.isMummy = False
 
     def __str__(self):
         if self.isPlayer:
-            return 'P'  # Prioridad a mostrar el jugador si está en la celda
+            return 'P'
         if self.isMummy:
-            return 'M'  # Prioridad a mostrar la momia si está en la celda
+            return 'M'
         elif self.has_treasure:
             return 'T'
         elif self.is_hole:
@@ -27,9 +27,9 @@ class Cell:
         self.visited = True
         if self.reward_points > 0:
             reward = self.reward_points
-            self.reward_points = 0  # La recompensa solo puede ser recolectada una vez
+            self.reward_points = 0
             return reward
         return 0
 
-    def set_player(self, isplayerboolean):
-        self.isPlayer = isplayerboolean  # Aquí se usa `self` para referirse al atributo de la clase
+    def set_player(self, is_player_boolean):
+        self.isPlayer = is_player_boolean

@@ -4,7 +4,7 @@ from cell import Cell
 import random
 
 from config import SIZE_CELL, VISITED_COLOR, TREASURE_COLOR, MUMMY_COLOR, PLAYER_COLOR, MARGIN, \
-    BACKGROUND_COLOR, CELL_COLOR
+    BACKGROUND_COLOR
 
 
 class GameMap:
@@ -14,11 +14,9 @@ class GameMap:
 
     @staticmethod
     def load_map():
-        # Inicializa un mapa 8x8 con objetos Cell
         return [[Cell(row, col) for col in range(8)] for row in range(8)]
 
     def setup_map(self):
-        # Coloca al jugador, tesoro, momia, etc.
         def obtain_free_cells():
             array_cells = []
             for fila in range(len(self.listCells)):
@@ -48,20 +46,18 @@ class GameMap:
                     cell.isPlayer = True
             return None
 
-        # Colocar elementos
         put_element('treasure')
         put_element('mummy')
-        for _ in range(5):  # Ejemplo: coloca 5 recompensas
+        for _ in range(5):
             put_element('reward', 50)
         put_element('player')
 
     def draw_map(self, screen):
-        # Calcula la posición inicial teniendo en cuenta el margen
         for row in range(len(self.listCells)):
             for column in range(len(self.listCells[row])):
                 cell = self.listCells[row][column]
 
-                if cell.isPlayer:  # Si el jugador está en esta celda
+                if cell.isPlayer:
                     color = PLAYER_COLOR
                     cell.visit()
                 elif cell.isMummy:
@@ -75,11 +71,9 @@ class GameMap:
                 else:
                     color = BACKGROUND_COLOR
 
-                # Calcula la posición ajustada con el margen para toda la malla
                 x = MARGIN + column * SIZE_CELL
                 y = MARGIN + row * SIZE_CELL
 
-                # Dibuja la celda en la posición ajustada
                 pygame.draw.rect(screen, color, pygame.Rect(x, y, SIZE_CELL, SIZE_CELL))
                 pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(x, y, SIZE_CELL, SIZE_CELL), 3)
 
@@ -99,20 +93,16 @@ class GameMap:
         else:
             return
 
-        # Verificar que la nueva posición está dentro de los límites y es válida
         if 0 <= new_pos[0] < len(self.listCells) and 0 <= new_pos[1] < len(self.listCells):
             cell = self.listCells[new_pos[0]][new_pos[1]]
-            if not cell.is_hole:  # Evitar celdas con agujeros
-
+            if not cell.is_hole:
                 cell = self.listCells[row][column]
                 cell.isPlayer = False
-                # El jugador ya no se encuentra en esa celda
 
                 cell = self.listCells[new_pos[0]][new_pos[1]]
                 cell.isPlayer = True
-                # El jugador se encuentra en esa celda
 
-                return cell.visit()  # Devuelve la recompensa obtenida, si la hay
+                return cell.visit()
         return 0
 
     def move_mummy(self):
@@ -134,22 +124,19 @@ class GameMap:
         else:
             return
 
-        # Verificar si la nueva posición está dentro del mapa y es válida
         if 0 <= new_pos[0] < len(self.listCells) and 0 <= new_pos[1] < len(self.listCells):
             cell = self.listCells[new_pos[0]][new_pos[1]]
-            if not cell.is_hole:  # Evitar celdas con agujeros
+            if not cell.is_hole:
                 cell = self.listCells[row][column]
                 cell.isMummy = False
-                # El jugador ya no se encuentra en esa celda
 
                 cell = self.listCells[new_pos[0]][new_pos[1]]
                 cell.isMummy = True
-                # El jugador se encuentra en esa celda
 
     def check_victory(self):
         cell = get_player_cell(self)
         cell2 = self.listCells[cell.row][cell.column]
-        return cell2.has_treasure  # Devuelve True si el jugador está en la celda con el tesoro
+        return cell2.has_treasure
 
     def check_lose(self):
         return get_player_cell(self) == get_mummy_cell(self)
@@ -160,7 +147,7 @@ def get_player_cell(self):
         for cell in row:
             if cell.isPlayer:
                 return cell
-    return None  # Si no se encuentra el jugador
+    return None
 
 
 def get_mummy_cell(self):
@@ -168,4 +155,4 @@ def get_mummy_cell(self):
         for cell in row:
             if cell.isMummy:
                 return cell
-    return None  # Si no se encuentra la momia
+    return None

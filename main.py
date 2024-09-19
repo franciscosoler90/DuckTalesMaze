@@ -1,19 +1,18 @@
 import pygame
-from gameMap import GameMap  # Asegúrate de que este sea el nombre correcto del archivo
+from gameMap import GameMap
 from config import SIZE_CELL, MARGIN
 
 
 def main():
     pygame.init()
 
-    # Calcula el tamaño de la pantalla considerando la malla y el margen
     screen_width = 8 * SIZE_CELL + 2 * MARGIN
     screen_height = 8 * SIZE_CELL + 2 * MARGIN
     screen = pygame.display.set_mode((screen_width, screen_height))
 
     pygame.display.set_caption('DuckTales Maze')
 
-    game_map = GameMap()  # Instancia de GameMap
+    game_map = GameMap()
 
     clock = pygame.time.Clock()
     running = True
@@ -33,22 +32,19 @@ def main():
                     game_map.move('RIGHT')
 
         screen.fill((0, 0, 0))
-        game_map.draw_map(screen)  # Llama al método de instancia
+        game_map.draw_map(screen)
         pygame.display.flip()
         clock.tick(10)
 
-        # Movimiento independiente de la momia
         game_map.move_mummy()
 
-        # Comprobar si la momia ha atrapado al jugador
         if game_map.check_lose():
             running = False
-            show_message(screen, '¡Has perdido!')
+            show_message(screen, '¡You Lose!')
 
-        # Verificar si el jugador ha ganado
         if game_map.check_victory():
             running = False
-            show_message(screen, '¡Has ganado!')
+            show_message(screen, '¡You Win!')
 
     pygame.quit()
 
@@ -59,7 +55,7 @@ def show_message(screen, title):
     text_rect = text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
     screen.blit(text, text_rect)
     pygame.display.flip()
-    pygame.time.wait(3000)  # Espera 3 segundos antes de salir
+    pygame.time.wait(3000)
 
 
 if __name__ == "__main__":
