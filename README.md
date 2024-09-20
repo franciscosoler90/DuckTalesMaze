@@ -34,29 +34,29 @@ DuckTales Maze es un juego en el que el jugador explora un laberinto de 8x8 celd
 
 1. Clona el repositorio:
 
-    ```bash
-    git clone https://github.com/tu-usuario/duckTales-maze.git
-    ```
+```bash
+git clone https://github.com/fransolerc/duckTales-maze.git
+```
 
 2. Navega al directorio del proyecto:
 
-    ```bash
-    cd duckTales-maze
-    ```
+```bash
+cd duckTales-maze
+```
 
 3. Instala las dependencias:
 
-    ```bash
-    pip install pygame
-    ```
+```bash
+pip install pygame
+```
 
 ## Uso
 
 1. Ejecuta el juego:
 
-    ```bash
-    python main.py
-    ```
+```bash
+python main.py
+```
 
 2. Usa las teclas de dirección (`UP`, `DOWN`, `LEFT`, `RIGHT`) para mover al jugador a través del laberinto.
 
