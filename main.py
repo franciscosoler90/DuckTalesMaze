@@ -1,6 +1,6 @@
 import pygame
-from gameMap import GameMap
-from config import SIZE_CELL, MARGIN, COLOR_BLACK, COLOR_WHITE
+from modules.gameMap import GameMap
+from modules.config import SIZE_CELL, MARGIN, COLOR_BLACK, COLOR_WHITE
 
 
 def main():

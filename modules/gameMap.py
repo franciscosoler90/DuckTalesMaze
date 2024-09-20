@@ -1,7 +1,7 @@
 import pygame
 import random
-from cell import Cell
-from config import SIZE_CELL, COLOR_VISITED, COLOR_TREASURE, COLOR_MUMMY, COLOR_PLAYER, COLOR_BLACK, MARGIN
+from modules.cell import Cell
+from modules.config import SIZE_CELL, COLOR_VISITED, COLOR_TREASURE, COLOR_MUMMY, COLOR_PLAYER, COLOR_BLACK, MARGIN
 
 
 class GameMap:
